@@ -49,5 +49,9 @@ void procesar_entrada() {
 
 
 int main(int argc, char** argv) {
+	
+
+
+	procesar_entrada();
 	return 0;
 }
