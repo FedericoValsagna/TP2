@@ -4,13 +4,6 @@
 #include "cola.h"
 #include "hash.h"
 #include "heap.h"
-//Este Enum no se donde ponerlo, xq se necesita en todo el programa creo, lo dejo acá por lo pronto pero claramente no es su lugar
-typedef enum URGENCIA{
-    URGENTE,
-    REGULAR
-}URGENCIA_T;
-
-
 
 struct lista_pacientes{
     cola_t* emergencias;

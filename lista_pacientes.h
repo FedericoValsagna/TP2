@@ -1,7 +1,7 @@
 #ifndef LISTA_PACIENTES_H
 #define LISTA_PACIENTES_H
 #include <stdbool.h>
-
+#include "zyxcba_helper.h"
 typedef struct lista_pacientes lista_pacientes_t;
 
 
