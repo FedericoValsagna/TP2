@@ -46,7 +46,7 @@ paciente_t* lista_pacientes_obtener_paciente(lista_pacientes_t* lista_pacientes)
 }
 
 void lista_pacientes_destruir(lista_pacientes_t* lista_pacientes){
-    cola_destruir(lista_pacientes->emergencias, NULL);
-    heap_destruir(lista_pacientes->normales, NULL);
+    cola_destruir(lista_pacientes->emergencias, free);
+    heap_destruir(lista_pacientes->normales, free); // Agregue los free para que no se pierda memoria al dejar pacientes sin liberar
     free(lista_pacientes);
 }
