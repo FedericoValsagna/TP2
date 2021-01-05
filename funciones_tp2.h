@@ -1,5 +1,8 @@
 #include <stdbool.h>
 
+typedef struct paciente paciente_t;
+typedef struct doctor doctor_t;
+
 "Se recibe un nombre de paciente y el nombre de una especialidad,
  y el sistema le añade a la lista de espera de la especialidad correspondiente."
 bool Pedir_Turno(paciente_t* paciente);
