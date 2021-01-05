@@ -4,6 +4,7 @@ typedef struct paciente{
     char* nombre;
     size_t anio_inscripcion;
 }paciente_t;
+
 typedef struct doctor{
     char* nombre;
     char* especialidad;
