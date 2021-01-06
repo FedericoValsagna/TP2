@@ -115,7 +115,7 @@ int main(int argc, char** argv) {
 		abb_destruir(doctores);
 		return 1;
 	}
-	int extra = 0 // Esto todavia no se para que usarlo
+	int extra = 0; // Esto todavia no se para que usarlo
 	lista_t* doctores_lista = csv_crear_estructura(argv[1], constructor_doctor, &extra);
 	lista_t* pacientes_lista = csv_crear_estructura(argv[2], constructor_paciente, &extra);
 
