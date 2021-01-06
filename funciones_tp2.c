@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 bool Pedir_Turno(paciente_t* paciente){
-
+    
 }
 
 bool atender_siguiente_paciente(doctor_t* doctor){

@@ -32,17 +32,29 @@ lista_pacientes_t* lista_pacientes_crear(){
 }
 
 bool lista_pacientes_guardar_paciente(lista_pacientes_t* lista_pacientes, paciente_t* paciente, URGENCIA_T urgencia_paciente){
-    if(urgencia_paciente == URGENTE){
-        return cola_encolar(lista_pacientes->emergencias, paciente);
+    if(urgencia_paciente == URGENTE && !cola_encolar(lista_pacientes->emergencias, paciente)){
+        return false;
     }
-    return heap_encolar(lista_pacientes->normales, paciente);
+    if(urgencia_paciente == REGULAR && !heap_encolar(lista_pacientes->normales, paciente)){
+        return false;
+    }
+    lista_pacientes->cantidad++;
+    return true;
 }
 
 paciente_t* lista_pacientes_obtener_paciente(lista_pacientes_t* lista_pacientes){
+    if(lista_pacientes->cantidad == 0){
+        return NULL;
+    }
+    lista_pacientes->cantidad--;
     if(!cola_esta_vacia(lista_pacientes->emergencias)){
         return cola_desencolar(lista_pacientes->emergencias);
     }
     return heap_desencolar(lista_pacientes->normales);
+}
+
+size_t lista_pacientes_cantidad(lista_pacientes_t* lista_pacientes){
+    return lista_pacientes->cantidad;
 }
 
 void lista_pacientes_destruir(lista_pacientes_t* lista_pacientes){
