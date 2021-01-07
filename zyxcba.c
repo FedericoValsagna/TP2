@@ -15,14 +15,21 @@
 
 void procesar_comando(const char* comando, const char** parametros, hash_t* pacientes, abb_t* doctores, hash_t* turnos_pacientes) {
 	if (strcmp(comando, COMANDO_PEDIR_TURNO) == 0) {
+		if(strlen(parametros) < 3){
+			printf(ENOENT_PARAMS, comando);
+			return;
+		}
+
 		paciente_t* paciente = hash_obtener(pacientes, parametros[0]);
 		if(!paciente){
-			// ERROR DE NO ENCONTRAR PACIENTE
+			printf(ENOENT_PACIENTE, parametros[0]);
+			return;
 		}
 
 		char* especialidad = parametros[1];
 		if(!hash_pertenece(turnos_pacientes, especialidad)){
-			// ERROR ESPECIALIDAD NO EXISTE
+			printf(ENOENT_ESPECIALIDAD, especialidad);
+			return;
 		}
 
 		URGENCIA_T urgencia;
@@ -31,19 +38,35 @@ void procesar_comando(const char* comando, const char** parametros, hash_t* paci
 		} else if(strcmp(parametros[2], URGENCIA2) == 0){
 			urgencia = REGULAR;
 		} else{
-			// ERROR NO EXISTE LA URGENCIA
+			printf(ENOENT_URGENCIA, parametros[2]);
+			return;
 		}
 
 		pedir_turno(paciente, especialidad, urgencia, turnos_pacientes);
 
 	} else if (strcmp(comando, COMANDO_ATENDER) == 0) {
-		atender_siguiente_paciente(parametros[0], doctores, turnos_pacientes);
+		if(strlen(parametros) < 1){
+			printf(ENOENT_PARAMS, comando);
+			return;
+		}
+		
+		doctor_t* doctor = abb_obtener(doctores, parametros[0]);
+		if(!doctor){
+			printf(ENOENT_DOCTOR, parametros[0]);
+			return;
+		}
+
+		atender_siguiente_paciente(doctor, turnos_pacientes);
 
 	} else if (strcmp(comando, COMANDO_INFORME) == 0) {
+		if(strlen(parametros) < 2){
+			printf(ENOENT_PARAMS, comando);
+			return;
+		}
 		informe_doctores(parametros[0], parametros[1], doctores);
 
 	} else {
-
+		printf(ENOENT_CMD, comando);
 	}
 }
 
@@ -79,6 +102,10 @@ void* constructor_paciente(char** linea, void* extra){
 		return NULL;
 	}
 	paciente->nombre = strdup(linea[0]);
+	if(!isdigit_strutil(linea[1])){ // IMPLEMENTAR ESTO EN STRUTIL
+		printf(ENOENT_ANIO, linea[1]);
+		return NULL;
+	}
 	paciente->anio_inscripcion = (size_t)atoi(linea[1]);
 	return paciente;
 }
@@ -154,6 +181,8 @@ int main(int argc, char** argv) {
 	// argv[1] CSV Doctores
 	// argv[2] CSV Pacientes
 
+	// FALTA ERROR DE NO PODER LEER ARCHIVOS CSV
+
 	abb_t* doctores = abb_crear(strcmp, free);
 	if(!doctores){
 		return 1;
@@ -172,7 +201,7 @@ int main(int argc, char** argv) {
 	}
 
 	lista_t* doctores_lista = csv_crear_estructura(argv[1], constructor_doctor, turnos_pacientes);
-	if(!doctores_lista){
+	if(!doctores_lista){ // Este checkeo no se si sirve, revisar como funca csv cuando devolves NULL en el constructor.
 		destruir_estructuras(pacientes, doctores, turnos_pacientes);
 		return 1;
 	}
