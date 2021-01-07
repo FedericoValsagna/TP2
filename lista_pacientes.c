@@ -26,7 +26,7 @@ lista_pacientes_t* lista_pacientes_crear(){
         free(lista_pacientes);
         return NULL;
     }
-    lista_pacientes->normales = heap_crear(strcmp);
+    lista_pacientes->normales = heap_crear(paciente_cmp);
     if(!lista_pacientes->normales){
         cola_destruir(lista_pacientes->emergencias, NULL);
         free(lista_pacientes);

@@ -141,6 +141,8 @@ int main(int argc, char** argv) {
 		destruir_estructuras(pacientes, doctores);
 		return 1;
 	}
+	lista_destruir(doctores_lista, free);
+	lista_destruir(pacientes_lista, free);
 
 	procesar_entrada();
 	hash_destruir(pacientes);
