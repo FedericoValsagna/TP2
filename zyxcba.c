@@ -73,12 +73,12 @@ bool llenar_doctores(lista_t* doctores_lista, abb_t* doctores_abb){
 	while(!lista_iter_al_final(doctores_iter)){
 		doctor_t* actual = lista_iter_ver_actual(doctores_iter);
 		if (!abb_guardar(doctores_abb, actual->nombre, actual)){
-			lista_iter_borrar(doctores_iter);
+			lista_iter_destruir(doctores_iter);
 			return false;
 		}
 		lista_iter_avanzar(doctores_lista);
 	}
-	lista_iter_borrar(doctores_iter);
+	lista_iter_destruir(doctores_iter);
 	return true;
 }
 
@@ -90,13 +90,18 @@ bool llenar_pacientes(lista_t* pacientes_lista, hash_t* pacientes_hash){
 	while(!lista_iter_al_final(pacientes_iter)){
 		paciente_t* actual = lista_iter_ver_actual(pacientes_iter);
 		if (!hash_guardar(pacientes_hash, actual->nombre, actual)){
-			lista_iter_borrar(pacientes_iter);
+			lista_iter_destruir(pacientes_iter);
 			return false;
 		}
 		lista_iter_avanzar(pacientes_lista);
 	}
-	lista_iter_borrar(pacientes_iter);
+	lista_iter_destruir(pacientes_iter);
 	return true;
+}
+
+void destruir_estructuras(hash_t* hash, abb_t* abb){
+	hash_destruir(hash);
+	abb_destruir(abb);
 }
 
 int main(int argc, char** argv) {
@@ -117,17 +122,23 @@ int main(int argc, char** argv) {
 	}
 	int extra = 0; // Esto todavia no se para que usarlo
 	lista_t* doctores_lista = csv_crear_estructura(argv[1], constructor_doctor, &extra);
+	if(!doctores_lista){
+		destruir_estructuras(pacientes, doctores);
+		return 1;
+	}
 	lista_t* pacientes_lista = csv_crear_estructura(argv[2], constructor_paciente, &extra);
+	if(!pacientes_lista){
+		destruir_estructuras(pacientes, doctores);
+		return 1;
+	}
 
 	if(!llenar_doctores(doctores_lista, doctores)){
-		hash_destruir(pacientes);
-		abb_destruir(doctores);
+		destruir_estructuras(pacientes, doctores);
 		return 1;
 	}
 
 	if(!llenar_pacientes(pacientes_lista, pacientes)){
-		hash_destruir(pacientes);
-		abb_destruir(doctores);
+		destruir_estructuras(pacientes, doctores);
 		return 1;
 	}
 
