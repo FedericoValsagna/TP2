@@ -1,7 +1,7 @@
 #include "funciones_tp2.h"
 #include <stdlib.h>
 
-bool Pedir_Turno(paciente_t* paciente){
+bool pedir_turno(paciente_t* paciente){
     
 }
 

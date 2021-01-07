@@ -10,12 +10,37 @@
 #define COMANDO_ATENDER "ATENDER_SIGUIENTE"
 #define COMANDO_INFORME "INFORME"
 
-void procesar_comando(const char* comando, const char** parametros) {
+#define URGENCIA1 "URGENTE"
+#define URGENCIA2 "REGULAR"
+
+void procesar_comando(const char* comando, const char** parametros, hash_t* pacientes, abb_t* doctores, hash_t* turnos_pacientes) {
 	if (strcmp(comando, COMANDO_PEDIR_TURNO) == 0) {
+		paciente_t* paciente = hash_obtener(pacientes, parametros[0]);
+		if(!paciente){
+			// ERROR DE NO ENCONTRAR PACIENTE
+		}
+
+		char* especialidad = parametros[1];
+		if(!hash_pertenece(especialidades, especialidad)){
+			// ERROR ESPECIALIDAD NO EXISTE
+		}
+
+		URGENCIA_T urgencia;
+		if(strcmp(parametros[2], URGENCIA1) == 0){
+			urgencia = URGENTE;
+		} else if(strcmp(parametros[2], URGENCIA2) == 0){
+			urgencia = REGULAR;
+		} else{
+			// ERROR NO EXISTE LA URGENCIA
+		}
+
+		pedir_turno(paciente, especialidad, urgencia, turnos_pacientes);
 
 	} else if (strcmp(comando, COMANDO_ATENDER) == 0) {
+		atender_siguiente_paciente(parametros[0], doctores, turnos_pacientes);
 
 	} else if (strcmp(comando, COMANDO_INFORME) == 0) {
+		informe_doctores(parametros[0], parametros[1], doctores);
 
 	} else {
 
@@ -29,7 +54,7 @@ void eliminar_fin_linea(char* linea) {
 	}
 }
 
-void procesar_entrada() {
+void procesar_entrada(hash_t* pacientes, abb_t* doctores, hash_t* turnos_pacientes) {
 	char* linea = NULL;
 	size_t c = 0;
 	while (getline(&linea, &c, stdin) > 0) {
@@ -41,7 +66,7 @@ void procesar_entrada() {
 			continue;	
 		}
 		char** parametros = split(campos[1], ',');
-		procesar_comando(campos[0], parametros);
+		procesar_comando(campos[0], parametros, pacientes, doctores, turnos_pacientes);
 		free_strv(parametros);
 		free_strv(campos);
 	}
@@ -99,9 +124,10 @@ bool llenar_pacientes(lista_t* pacientes_lista, hash_t* pacientes_hash){
 	return true;
 }
 
-void destruir_estructuras(hash_t* hash, abb_t* abb){
+void destruir_estructuras(hash_t* hash, abb_t* abb, hash_t* hash2){
 	hash_destruir(hash);
 	abb_destruir(abb);
+	hash_destruir(hash2);
 }
 
 int main(int argc, char** argv) {
@@ -115,30 +141,39 @@ int main(int argc, char** argv) {
 	if(!doctores){
 		return 1;
 	}
+
+	// crear hash de especialiades
 	hash_t* pacientes = hash_crear(free);
 	if(!pacientes){
 		abb_destruir(doctores);
 		return 1;
 	}
+	hash_t* turnos_pacientes = hash_crear(free);
+	if(!turnos_pacientes){
+		abb_destruir(doctores);
+		hash_destruir(turnos_pacientes);
+		return 1;
+	}
+
 	int extra = 0; // Esto todavia no se para que usarlo
 	lista_t* doctores_lista = csv_crear_estructura(argv[1], constructor_doctor, &extra);
 	if(!doctores_lista){
-		destruir_estructuras(pacientes, doctores);
+		destruir_estructuras(pacientes, doctores, turnos_pacientes);
 		return 1;
 	}
 	lista_t* pacientes_lista = csv_crear_estructura(argv[2], constructor_paciente, &extra);
 	if(!pacientes_lista){
-		destruir_estructuras(pacientes, doctores);
+		destruir_estructuras(pacientes, doctores, turnos_pacientes);
 		return 1;
 	}
 
 	if(!llenar_doctores(doctores_lista, doctores)){
-		destruir_estructuras(pacientes, doctores);
+		destruir_estructuras(pacientes, doctores, turnos_pacientes);
 		return 1;
 	}
 
 	if(!llenar_pacientes(pacientes_lista, pacientes)){
-		destruir_estructuras(pacientes, doctores);
+		destruir_estructuras(pacientes, doctores, turnos_pacientes);
 		return 1;
 	}
 	lista_destruir(doctores_lista, free); 
@@ -146,8 +181,7 @@ int main(int argc, char** argv) {
 	// estan hechos con strdup, tal vez se pierda memoria aca para tener en cuenta en el fiuter
 	lista_destruir(pacientes_lista, free);
 
-	procesar_entrada();
-	hash_destruir(pacientes);
-	abb_destruir(doctores);
+	procesar_entrada(pacientes, doctores, turnos_pacientes);
+	destruir_estructuras(pacientes, doctores, turnos_pacientes);
 	return 0;
 }
