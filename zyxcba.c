@@ -212,7 +212,8 @@ int main(int argc, char** argv) {
 		destruir_estructuras(pacientes, doctores, turnos_pacientes);
 		return 1;
 	}
-	lista_t* pacientes_lista = csv_crear_estructura(csv_pacientes, constructor_paciente, &extra);
+
+	lista_t* pacientes_lista = csv_crear_estructura(csv_pacientes, constructor_paciente, NULL);
 	if(!pacientes_lista){
 		printf(ENOENT_ARCHIVO, csv_pacientes);
 		destruir_estructuras(pacientes, doctores, turnos_pacientes);
