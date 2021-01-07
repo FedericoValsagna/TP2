@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
   /////////////////
  //  Funciones  //
@@ -83,6 +84,15 @@ char *join(char **strv, char sep)
         }
     }
     return cadena;
+}
+
+bool isdigit_strutil(char* cad){
+    for(int i = 0; cad[i] != NULL; i++){
+        if(isdigit(cad[i]) == 0){
+            return false;
+        }
+    }
+    return true;
 }
 
 void free_strv(char *strv[])
