@@ -143,6 +143,7 @@ int main(int argc, char** argv) {
 	}
 
 	// crear hash de especialiades
+	
 	hash_t* pacientes = hash_crear(free);
 	if(!pacientes){
 		abb_destruir(doctores);
