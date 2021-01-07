@@ -11,9 +11,14 @@ struct lista_pacientes{
     size_t cantidad;
 };
 
-int paciente_cmp(const void *p1, const void *p2){
-    // Aca el problema es que tengo que acceder al struct paciente para saber su anio de inscripcion
-    // Se puede solucionar con una primitiva que devuelva el anio pero no se si estaria correcto hacerlo asi 
+int paciente_cmp(const paciente_t *p1, const paciente_t *p2){
+    if p1->anio_inscripcion < p2->anio_inscripcion{
+        return -1;
+    }
+    if p1->anio_inscripcion > p2->anio_inscripcion{
+        return 1;
+    }
+    return 0;
 }
 
 lista_pacientes_t* lista_pacientes_crear(){
