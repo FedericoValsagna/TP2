@@ -5,6 +5,8 @@
 #include "strutil.h"
 #include "mensajes.h"
 #include "zyxcba_helper.h"
+#include "lista_pacientes.h"
+#include "lista.h"
 
 #define COMANDO_PEDIR_TURNO "PEDIR_TURNO"
 #define COMANDO_ATENDER "ATENDER_SIGUIENTE"
