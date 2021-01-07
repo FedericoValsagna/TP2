@@ -110,8 +110,6 @@ void* constructor_paciente(char** linea, void* extra){
 	return paciente;
 }
 
-// Estas 2 funciones tal vez quedarian mejor como primitivas de doctor_crear o paciente_crear
-
 void* constructor_doctor(char** linea, void* extra){
 	doctor_t* doctor = malloc(sizeof(doctor_t));
 	if(!doctor){
