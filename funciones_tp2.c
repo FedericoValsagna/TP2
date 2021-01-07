@@ -19,12 +19,14 @@ bool pedir_turno(paciente_t* paciente, char* especialidad, URGENCIA_T urgencia, 
 void atender_siguiente_paciente(doctor_t* doctor, hash_t* lista_pacientes_totales){
     lista_pacientes_t* lista_pacientes = hash_obtener(lista_pacientes_totales, doctor->especialidad);
     paciente_t* paciente = lista_pacientes_obtener_paciente(lista_pacientes);
+    if(!paciente){
+        printf(SIN_PACIENTES);
+        return;
+    }
+    doctor->pacientes_atendidos++;
     printf(PACIENTE_ATENDIDO, paciente->nombre);
     printf(CANT_PACIENTES_ENCOLADOS, lista_pacientes_cantidad(lista_pacientes), doctor->especialidad);
 }
-
-
-
 
 void informe_doctores(char letra_inicio, char letra_final, abb_t* doctores){
     abb_iter_t* iterador = abb_iter_in_crear(doctores);
