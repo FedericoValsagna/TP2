@@ -141,7 +141,9 @@ int main(int argc, char** argv) {
 		destruir_estructuras(pacientes, doctores);
 		return 1;
 	}
-	lista_destruir(doctores_lista, free);
+	lista_destruir(doctores_lista, free); 
+	// Creo que no alcanza con esto por que los nombres de cada doctor y paciente
+	// estan hechos con strdup, tal vez se pierda memoria aca para tener en cuenta en el fiuter
 	lista_destruir(pacientes_lista, free);
 
 	procesar_entrada();
