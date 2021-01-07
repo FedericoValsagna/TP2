@@ -21,7 +21,7 @@ void procesar_comando(const char* comando, const char** parametros, hash_t* paci
 		}
 
 		char* especialidad = parametros[1];
-		if(!hash_pertenece(especialidades, especialidad)){
+		if(!hash_pertenece(turnos_pacientes, especialidad)){
 			// ERROR ESPECIALIDAD NO EXISTE
 		}
 
@@ -75,6 +75,9 @@ void procesar_entrada(hash_t* pacientes, abb_t* doctores, hash_t* turnos_pacient
 
 void* constructor_paciente(char** linea, void* extra){
 	paciente_t* paciente = malloc(sizeof(paciente_t));
+	if(!paciente){
+		return NULL;
+	}
 	paciente->nombre = strdup(linea[0]);
 	paciente->anio_inscripcion = (size_t)atoi(linea[1]);
 	return paciente;
@@ -84,9 +87,23 @@ void* constructor_paciente(char** linea, void* extra){
 
 void* constructor_doctor(char** linea, void* extra){
 	doctor_t* doctor = malloc(sizeof(doctor_t));
+	if(!doctor){
+		return NULL;
+	}
+	char* especialidad = linea[1];
+	if(!hash_pertenece(extra, especialidad)){
+		lista_pacientes_t* lista_pacientes = lista_pacientes_crear();
+		if(!lista_pacientes){
+			free(doctor);
+			return NULL;
+		}
+		hash_guardar(extra, especialidad, lista_pacientes);
+	}
+
 	doctor->nombre = strdup(linea[0]);
-	doctor->especialidad = strdup(linea[1]);
-	doctor->pacientes_atendidos = 0; 
+	doctor->especialidad = strdup(especialidad);
+	doctor->pacientes_atendidos = 0;
+
 	return doctor;
 }
 
@@ -124,10 +141,10 @@ bool llenar_pacientes(lista_t* pacientes_lista, hash_t* pacientes_hash){
 	return true;
 }
 
-void destruir_estructuras(hash_t* hash, abb_t* abb, hash_t* hash2){
-	hash_destruir(hash);
-	abb_destruir(abb);
-	hash_destruir(hash2);
+void destruir_estructuras(hash_t* pacientes, abb_t* doctores, hash_t* turnos_pacientes){
+	hash_destruir(pacientes);
+	abb_destruir(doctores);
+	hash_destruir(turnos_pacientes);
 }
 
 int main(int argc, char** argv) {
@@ -142,7 +159,6 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 
-	// crear hash de especialiades
 	hash_t* pacientes = hash_crear(free);
 	if(!pacientes){
 		abb_destruir(doctores);
@@ -151,12 +167,11 @@ int main(int argc, char** argv) {
 	hash_t* turnos_pacientes = hash_crear(free);
 	if(!turnos_pacientes){
 		abb_destruir(doctores);
-		hash_destruir(turnos_pacientes);
+		hash_destruir(pacientes);
 		return 1;
 	}
 
-	int extra = 0; // Esto todavia no se para que usarlo
-	lista_t* doctores_lista = csv_crear_estructura(argv[1], constructor_doctor, &extra);
+	lista_t* doctores_lista = csv_crear_estructura(argv[1], constructor_doctor, turnos_pacientes);
 	if(!doctores_lista){
 		destruir_estructuras(pacientes, doctores, turnos_pacientes);
 		return 1;
