@@ -104,8 +104,7 @@ void* constructor_paciente(char** linea, void* extra){
 	paciente->nombre = strdup(linea[0]);
 	if(!isdigit_strutil(linea[1])){
 		printf(ENOENT_ANIO, linea[1]);
-		return NULL; 
-		// Devolver NULL no hace que se frene el constructor, habria que fijarse cuando se crean los hash y abbs si algun elmento es NULL para frenar el programa
+		return NULL;
 	}
 	paciente->anio_inscripcion = (size_t)atoi(linea[1]);
 	return paciente;
@@ -142,6 +141,9 @@ bool llenar_doctores(lista_t* doctores_lista, abb_t* doctores_abb){
 	}
 	while(!lista_iter_al_final(doctores_iter)){
 		doctor_t* actual = lista_iter_ver_actual(doctores_iter);
+		if(!actual){
+			return false;
+		}
 		if (!abb_guardar(doctores_abb, actual->nombre, actual)){
 			lista_iter_destruir(doctores_iter);
 			return false;
@@ -159,6 +161,9 @@ bool llenar_pacientes(lista_t* pacientes_lista, hash_t* pacientes_hash){
 	}
 	while(!lista_iter_al_final(pacientes_iter)){
 		paciente_t* actual = lista_iter_ver_actual(pacientes_iter);
+		if(!actual){
+			return false;
+		}
 		if (!hash_guardar(pacientes_hash, actual->nombre, actual)){
 			lista_iter_destruir(pacientes_iter);
 			return false;
@@ -177,12 +182,11 @@ void destruir_estructuras(hash_t* pacientes, abb_t* doctores, hash_t* turnos_pac
 
 int main(int argc, char** argv) {
 	if(argc < 3){
+		printf(ENOENT_CANT_PARAMS);
 		return 1;
 	}
-	// argv[1] CSV Doctores
-	// argv[2] CSV Pacientes
-
-	// FALTA ERROR DE NO PODER LEER ARCHIVOS CSV
+	char* csv_doctores = argv[1];
+	char* csv_pacientes = argv[2];
 
 	abb_t* doctores = abb_crear(strcmp, free);
 	if(!doctores){
@@ -201,13 +205,15 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 
-	lista_t* doctores_lista = csv_crear_estructura(argv[1], constructor_doctor, turnos_pacientes);
-	if(!doctores_lista){ // Este checkeo no se si sirve, revisar como funca csv cuando devolves NULL en el constructor.
+	lista_t* doctores_lista = csv_crear_estructura(csv_doctores, constructor_doctor, turnos_pacientes);
+	if(!doctores_lista){
+		printf(ENOENT_ARCHIVO, csv_doctores);
 		destruir_estructuras(pacientes, doctores, turnos_pacientes);
 		return 1;
 	}
-	lista_t* pacientes_lista = csv_crear_estructura(argv[2], constructor_paciente, &extra);
+	lista_t* pacientes_lista = csv_crear_estructura(csv_pacientes, constructor_paciente, &extra);
 	if(!pacientes_lista){
+		printf(ENOENT_ARCHIVO, csv_pacientes);
 		destruir_estructuras(pacientes, doctores, turnos_pacientes);
 		return 1;
 	}
