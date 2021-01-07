@@ -37,7 +37,12 @@ void procesar_comando(const char* comando, const char** parametros, hash_t* paci
 		pedir_turno(paciente, especialidad, urgencia, turnos_pacientes);
 
 	} else if (strcmp(comando, COMANDO_ATENDER) == 0) {
-		atender_siguiente_paciente(parametros[0], doctores, turnos_pacientes);
+		doctor_t* doctor = abb_obtener(doctores, parametros[0]);
+		if(!doctor){
+			// ERROR NO SE ENCONTRO AL DOCTOR
+		}
+
+		atender_siguiente_paciente(doctor, turnos_pacientes);
 
 	} else if (strcmp(comando, COMANDO_INFORME) == 0) {
 		informe_doctores(parametros[0], parametros[1], doctores);
