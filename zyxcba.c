@@ -188,7 +188,8 @@ int main(int argc, char** argv) {
 	char* csv_doctores = argv[1];
 	char* csv_pacientes = argv[2];
 
-	abb_t* doctores = abb_crear(strcmp, free); // Todos estos se estan creando con free para liberar pero muy probablemente no este bien
+	abb_t* doctores = abb_crear(strcmp, free); 
+	// Todos estos se estan creando con free para liberar pero muy probablemente no este bien
 	if(!doctores){
 		return 1;
 	}
