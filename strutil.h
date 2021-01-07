@@ -35,6 +35,12 @@ char **split(const char *str, char sep);
 char *join(char **strv, char sep);
 
 /*
+ * Recibe una cadena y devuelve true si todos los caracteres de la cadena son digitos,
+ * de lo contrario, devuelve false.
+ */
+bool isdigit_strutil(char* cad);
+
+/*
  * Libera un arreglo dinámico de cadenas, y todas las cadenas que contiene.
  */
 void free_strv(char *strv[]);

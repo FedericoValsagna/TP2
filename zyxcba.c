@@ -102,9 +102,10 @@ void* constructor_paciente(char** linea, void* extra){
 		return NULL;
 	}
 	paciente->nombre = strdup(linea[0]);
-	if(!isdigit_strutil(linea[1])){ // IMPLEMENTAR ESTO EN STRUTIL
+	if(!isdigit_strutil(linea[1])){
 		printf(ENOENT_ANIO, linea[1]);
-		return NULL;
+		return NULL; 
+		// Devolver NULL no hace que se frene el constructor, habria que fijarse cuando se crean los hash y abbs si algun elmento es NULL para frenar el programa
 	}
 	paciente->anio_inscripcion = (size_t)atoi(linea[1]);
 	return paciente;
