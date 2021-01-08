@@ -4,7 +4,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
+#include <ctype.h>
 
   /////////////////
  //  Funciones  //
@@ -87,7 +87,7 @@ char *join(char **strv, char sep)
 }
 
 bool isdigit_strutil(char* cad){
-    for(int i = 0; cad[i] != NULL; i++){
+    for(int i = 0; cad[i] != '\0'; i++){
         if(isdigit(cad[i]) == 0){
             return false;
         }
@@ -103,4 +103,15 @@ void free_strv(char *strv[])
     }
     free(strv);
     return;
+}
+
+size_t len_split(char** strv){
+    if(!strv){
+        return 0;
+    }
+    size_t cantidad = 0;
+    while(strv[cantidad] != NULL){
+        cantidad++;
+    }
+    return cantidad;
 }

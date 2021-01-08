@@ -21,7 +21,7 @@ void atender_siguiente_paciente(doctor_t* doctor, hash_t* lista_pacientes_totale
 // El sistema imprime la lista de doctores en orden alfabético,
 // junto con su especialidad y el número de pacientes que atendieron desde que arrancó el sistema.
 // Opcionalmente, se puede especificar el rango (alfabético) de doctores sobre los que se desean informes."
-void informe_doctores(char letra_inicio, char letra_final, abb_t* doctores);
+void informe_doctores(char* letra_inicio, char* letra_final, abb_t* doctores);
 
 
 #endif  // FUNCIONES_TP2_H

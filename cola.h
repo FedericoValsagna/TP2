@@ -10,7 +10,6 @@
 
 /* La cola está planteada como una cola de punteros genéricos. */
 
-struct cola;
 typedef struct cola cola_t;
 
 
