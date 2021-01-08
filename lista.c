@@ -12,7 +12,7 @@ struct nodo
     nodo_t* siguiente;
 };
 
-nodo_t* nodo_crear(void* dato, nodo_t* siguiente)
+static nodo_t* nodo_crear(void* dato, nodo_t* siguiente)
 {
     nodo_t* nuevo_nodo = malloc(sizeof(nodo_t));
     if(nuevo_nodo == NULL)
