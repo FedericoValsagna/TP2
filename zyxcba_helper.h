@@ -1,4 +1,5 @@
 #ifndef ZYXCBA_HELP
+#define ZYXCBA_HELP
 #include <stdlib.h>
 typedef struct paciente{
     char* nombre;
