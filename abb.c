@@ -1,8 +1,9 @@
 #define _POSIX_C_SOURCE 200809L
+#include <stdlib.h>
 #include "abb.h"
 #include <string.h>
 #include "pila.h"
-#include <stdio.h>
+
 typedef struct nodo nodo_t;
 
 struct nodo{
@@ -121,63 +122,6 @@ void* _abb_borrar(abb_t* arbol, nodo_t* padre, nodo_t* hijo, const char* clave, 
     if(arbol->comparar(hijo->clave, clave) < 0){
         return _abb_borrar(arbol, hijo, hijo->der, clave, false);
     }
-    //
-    //CASO BORDE: Eliminar la raiz
-    //
-    if(!padre){
-        //Caso sin hijos
-        if(!hijo->izq && !hijo->der){
-            arbol->raiz = NULL;
-            arbol->cantidad--;
-            return nodo_destruir(hijo);
-        }
-        //Caso 1 hijo (Derecho)
-        if(!hijo->izq && hijo->der){
-            arbol->raiz = hijo->der;
-            arbol->cantidad--;
-            return nodo_destruir(hijo);
-        }
-         //Caso 1 hijo (Izquierdo)
-        if(!hijo->der && hijo->izq){
-            arbol->raiz = hijo->izq;
-            arbol->cantidad--;
-            return nodo_destruir(hijo);
-        }
-        //Caso 2 hijos
-        if(hijo->izq && hijo->der){
-            nodo_t* reemplazo = reemplazante(hijo, arbol->comparar, clave);
-            char* reemplazo_clave = strdup(reemplazo->clave);
-            void* reemplazo_dato = reemplazo->dato;
-            void* dato = hijo->dato;
-            _abb_borrar(arbol, NULL, arbol->raiz, reemplazo->clave, false);
-            free(hijo->clave);
-            hijo->clave = reemplazo_clave;
-            hijo->dato = reemplazo_dato;
-            return dato;
-        }
-    }
-    //
-    //
-    //
-    nodo_t** puntero_a_hijo = hijo_es_izquierdo ? &padre->izq : &padre->der;
-    //Caso sin hijos
-    if(!hijo->izq && !hijo->der){
-        *puntero_a_hijo = NULL;
-        arbol->cantidad--;
-        return nodo_destruir(hijo);
-    }
-    //Caso 1 hijo (Derecho)
-    if(!hijo->izq && hijo->der){
-        *puntero_a_hijo = hijo->der;
-        arbol->cantidad--;
-        return nodo_destruir(hijo);
-    }
-    //Caso 1 hijo (Izquierdo)
-    if(!hijo->der && hijo->izq){
-        *puntero_a_hijo = hijo->izq;
-        arbol->cantidad--;
-        return nodo_destruir(hijo);
-    }
     //Caso 2 hijos
     if(hijo->izq && hijo->der){
         nodo_t* reemplazo = reemplazante(hijo, arbol->comparar, clave);
@@ -190,7 +134,43 @@ void* _abb_borrar(abb_t* arbol, nodo_t* padre, nodo_t* hijo, const char* clave, 
         hijo->dato = reemplazo_dato;
         return dato;
     }
-    return NULL;
+    //
+    //CASO BORDE: Eliminar la raiz
+    //
+    if(!padre){
+        //Caso sin hijos
+        if(!hijo->izq && !hijo->der){
+            arbol->raiz = NULL;
+        }
+        //Caso 1 hijo (Derecho)
+        if(!hijo->izq && hijo->der){
+            arbol->raiz = hijo->der;
+        }
+        //Caso 1 hijo (Izquierdo)
+        if(!hijo->der && hijo->izq){
+            arbol->raiz = hijo->izq;
+        }
+        arbol->cantidad--;
+        return nodo_destruir(hijo);
+    }
+    //
+    //
+    //
+    nodo_t** puntero_a_hijo = hijo_es_izquierdo ? &padre->izq : &padre->der;
+    //Caso sin hijos
+    if(!hijo->izq && !hijo->der){
+        *puntero_a_hijo = NULL;
+    }
+    //Caso 1 hijo (Derecho)
+    if(!hijo->izq && hijo->der){
+        *puntero_a_hijo = hijo->der;
+    }
+    //Caso 1 hijo (Izquierdo)
+    if(!hijo->der && hijo->izq){
+        *puntero_a_hijo = hijo->izq;
+    }
+    arbol->cantidad--;
+    return nodo_destruir(hijo);
 }
 void* abb_borrar(abb_t *arbol, const char *clave){
     if(!arbol){
@@ -258,16 +238,18 @@ void abb_destruir(abb_t *arbol){
     free(arbol);
 }
 
-void _abb_in_order(nodo_t*actual, bool visitar(const char*, void*, void*), void* extra){
+bool _abb_in_order(nodo_t*actual, bool visitar(const char*, void*, void*), void* extra){
     if(!actual){
-        return;
+        return true;
     }
-    _abb_in_order(actual->izq, visitar, extra);
-    if(!visitar(actual->clave,actual->dato, extra)){
-        return;
+    bool estado =_abb_in_order(actual->izq, visitar, extra);
+    if(estado){
+        if(!visitar(actual->clave,actual->dato, extra)){
+            return false;
+        }
+        return _abb_in_order(actual->der, visitar, extra);
     }
-    _abb_in_order(actual->der, visitar, extra);
-    return;
+    return false;
 }
 void abb_in_order(abb_t *arbol, bool visitar(const char *, void *, void *), void *extra){
     if(!arbol){
@@ -276,7 +258,24 @@ void abb_in_order(abb_t *arbol, bool visitar(const char *, void *, void *), void
     _abb_in_order(arbol->raiz, visitar, extra);
 }
 
+nodo_t* obtener_inicio(abb_t* abb, nodo_t* actual, char* inicio){
+    //
+    //Creo que esto debería funcionar, pero no tengo ni la menor idea
+    //
+    if(!actual){
+        return NULL;
+    }
+    int comparacion = abb->comparar(actual->clave, inicio);
+    if(comparacion < 0){
+        nodo_t* resultado = obtener_inicio(abb,actual->der,inicio);
+        return resultado == NULL ?  actual :  resultado;
+    }
+    if(comparacion > 0){
+        return obtener_inicio(abb, actual->izq, inicio);
+    }
+    return actual;
 
+}
 abb_iter_t *abb_iter_in_crear(const abb_t *arbol){
     abb_iter_t* iter = malloc(sizeof(abb_iter_t));
     if(!iter){
@@ -290,6 +289,31 @@ abb_iter_t *abb_iter_in_crear(const abb_t *arbol){
     iter->stack = pila;
     iter->abb = arbol;
     iter->act = arbol->raiz;
+    if(!iter->act){
+        return iter;
+    }
+    while(iter->act->izq){
+        pila_apilar(pila, iter->act);
+        iter->act = iter->act->izq;
+    }
+    return iter;
+}
+
+abb_iter_t* abb_iter_in_crear_desde(const abb_t* arbol, char* inicio){
+    //Hay que crear esta primitiva, que devuelva un abb
+    abb_iter_t* iter = malloc(sizeof(abb_iter_t));
+    if(!iter){
+        return NULL;
+    }
+    pila_t* pila = pila_crear();
+
+    if(!pila){
+        free(iter);
+        return NULL;
+    }
+    iter->stack = pila;
+    iter->abb = arbol;
+    iter->act = obtener_inicio(arbol, arbol->raiz, inicio);
     if(!iter->act){
         return iter;
     }
@@ -332,24 +356,3 @@ void abb_iter_in_destruir(abb_iter_t* iter){
     pila_destruir(iter->stack);
     free(iter);
 }
-
-
-//
-//ELIMINAR PARA LA ENTREGA
-//
-void _imprimir_inorder(nodo_t* actual){
-    if(!actual){
-        return;
-    }
-    _imprimir_inorder(actual->izq);
-    printf(" %s, ", actual->clave);
-    _imprimir_inorder(actual->der);
-}
-void imprimir_inorder(abb_t* arbol){
-    printf("[");
-    _imprimir_inorder(arbol->raiz);
-    printf("]\n");
-}
-//
-//
-//
