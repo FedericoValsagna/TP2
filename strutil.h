@@ -5,6 +5,8 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+
 /*
  * Devuelve una nueva cadena con los primeros ‘n’ caracteres de la cadena
  * ‘str’. La liberación de la memoria dinámica devuelta queda a cargo de
@@ -44,5 +46,11 @@ bool isdigit_strutil(char* cad);
  * Libera un arreglo dinámico de cadenas, y todas las cadenas que contiene.
  */
 void free_strv(char *strv[]);
+
+
+/*
+ * Recibe un arreglo dinámico de cadenas, y devuelve la cantidad de cadenas que contiene en formato size_t
+ */
+size_t len_split(char** strv);
 
 #endif  // STRUTIL_H

@@ -28,7 +28,7 @@ void atender_siguiente_paciente(doctor_t* doctor, hash_t* lista_pacientes_totale
     printf(CANT_PACIENTES_ENCOLADOS, lista_pacientes_cantidad(lista_pacientes), doctor->especialidad);
 }
 
-void informe_doctores(char letra_inicio, char letra_final, abb_t* doctores){
+void informe_doctores(char* letra_inicio, char* letra_final, abb_t* doctores){
     abb_iter_t* iterador = abb_iter_in_crear(doctores);
     size_t contador = 0;
     while(!abb_iter_in_al_final(iterador)){

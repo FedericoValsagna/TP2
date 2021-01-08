@@ -11,7 +11,9 @@ struct lista_pacientes{
     size_t cantidad;
 };
 
-int paciente_cmp(const paciente_t *p1, const paciente_t *p2){
+int paciente_cmp(const void *paciente1, const void *paciente2){
+    paciente_t* p1 = (paciente_t*) paciente1;
+    paciente_t* p2 = (paciente_t*) paciente2;
     if (p1->anio_inscripcion < p2->anio_inscripcion){
         return -1;
     }

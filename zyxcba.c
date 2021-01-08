@@ -1,6 +1,9 @@
+#define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include "csv.h"
 #include "funciones_tp2.h"
 #include "strutil.h"
 #include "mensajes.h"
@@ -15,9 +18,9 @@
 #define URGENCIA1 "URGENTE"
 #define URGENCIA2 "REGULAR"
 
-void procesar_comando(const char* comando, const char** parametros, hash_t* pacientes, abb_t* doctores, hash_t* turnos_pacientes) {
+void procesar_comando(const char* comando, char** parametros, hash_t* pacientes, abb_t* doctores, hash_t* turnos_pacientes) {
 	if (strcmp(comando, COMANDO_PEDIR_TURNO) == 0) {
-		if(strlen(parametros) < 3){
+		if(len_split(parametros) < 3){
 			printf(ENOENT_PARAMS, comando);
 			return;
 		}
@@ -47,7 +50,7 @@ void procesar_comando(const char* comando, const char** parametros, hash_t* paci
 		pedir_turno(paciente, especialidad, urgencia, turnos_pacientes);
 
 	} else if (strcmp(comando, COMANDO_ATENDER) == 0) {
-		if(strlen(parametros) < 1){
+		if(len_split(parametros) < 1){
 			printf(ENOENT_PARAMS, comando);
 			return;
 		}
@@ -61,7 +64,7 @@ void procesar_comando(const char* comando, const char** parametros, hash_t* paci
 		atender_siguiente_paciente(doctor, turnos_pacientes);
 
 	} else if (strcmp(comando, COMANDO_INFORME) == 0) {
-		if(strlen(parametros) < 2){
+		if(len_split(parametros) < 2){
 			printf(ENOENT_PARAMS, comando);
 			return;
 		}
@@ -148,7 +151,7 @@ bool llenar_doctores(lista_t* doctores_lista, abb_t* doctores_abb){
 			lista_iter_destruir(doctores_iter);
 			return false;
 		}
-		lista_iter_avanzar(doctores_lista);
+		lista_iter_avanzar(doctores_iter);
 	}
 	lista_iter_destruir(doctores_iter);
 	return true;
@@ -168,7 +171,7 @@ bool llenar_pacientes(lista_t* pacientes_lista, hash_t* pacientes_hash){
 			lista_iter_destruir(pacientes_iter);
 			return false;
 		}
-		lista_iter_avanzar(pacientes_lista);
+		lista_iter_avanzar(pacientes_iter);
 	}
 	lista_iter_destruir(pacientes_iter);
 	return true;

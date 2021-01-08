@@ -258,10 +258,7 @@ void abb_in_order(abb_t *arbol, bool visitar(const char *, void *, void *), void
     _abb_in_order(arbol->raiz, visitar, extra);
 }
 
-nodo_t* obtener_inicio(abb_t* abb, nodo_t* actual, char* inicio){
-    //
-    //Creo que esto debería funcionar, pero no tengo ni la menor idea
-    //
+nodo_t* obtener_inicio(const abb_t* abb, nodo_t* actual, char* inicio){
     if(!actual){
         return NULL;
     }
@@ -289,31 +286,6 @@ abb_iter_t *abb_iter_in_crear(const abb_t *arbol){
     iter->stack = pila;
     iter->abb = arbol;
     iter->act = arbol->raiz;
-    if(!iter->act){
-        return iter;
-    }
-    while(iter->act->izq){
-        pila_apilar(pila, iter->act);
-        iter->act = iter->act->izq;
-    }
-    return iter;
-}
-
-abb_iter_t* abb_iter_in_crear_desde(const abb_t* arbol, char* inicio){
-    //Hay que crear esta primitiva, que devuelva un abb
-    abb_iter_t* iter = malloc(sizeof(abb_iter_t));
-    if(!iter){
-        return NULL;
-    }
-    pila_t* pila = pila_crear();
-
-    if(!pila){
-        free(iter);
-        return NULL;
-    }
-    iter->stack = pila;
-    iter->abb = arbol;
-    iter->act = obtener_inicio(arbol, arbol->raiz, inicio);
     if(!iter->act){
         return iter;
     }
