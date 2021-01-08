@@ -15,6 +15,7 @@ bool lista_pacientes_guardar_paciente(lista_pacientes_t* lista_pacientes, pacien
 
 paciente_t* lista_pacientes_obtener_paciente(lista_pacientes_t* lista_pacientes);
 
+size_t lista_pacientes_cantidad(lista_pacientes_t* lista_pacientes);
 
 void lista_pacientes_destruir();
 

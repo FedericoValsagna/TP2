@@ -12,10 +12,10 @@ struct lista_pacientes{
 };
 
 int paciente_cmp(const paciente_t *p1, const paciente_t *p2){
-    if p1->anio_inscripcion < p2->anio_inscripcion{
+    if (p1->anio_inscripcion < p2->anio_inscripcion){
         return -1;
     }
-    if p1->anio_inscripcion > p2->anio_inscripcion{
+    if (p1->anio_inscripcion > p2->anio_inscripcion){
         return 1;
     }
     return 0;
