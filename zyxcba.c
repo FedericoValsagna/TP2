@@ -20,7 +20,7 @@
 
 void procesar_comando(const char* comando, char** parametros, hash_t* pacientes, abb_t* doctores, hash_t* turnos_pacientes) {
 	if (strcmp(comando, COMANDO_PEDIR_TURNO) == 0) {
-		if(len_split(parametros) < 3){
+		if(len_split(parametros) != 3){
 			printf(ENOENT_PARAMS, comando);
 			return;
 		}
@@ -50,7 +50,7 @@ void procesar_comando(const char* comando, char** parametros, hash_t* pacientes,
 		pedir_turno(paciente, especialidad, urgencia, turnos_pacientes);
 
 	} else if (strcmp(comando, COMANDO_ATENDER) == 0) {
-		if(len_split(parametros) < 1){
+		if(len_split(parametros) != 1){
 			printf(ENOENT_PARAMS, comando);
 			return;
 		}
@@ -64,11 +64,16 @@ void procesar_comando(const char* comando, char** parametros, hash_t* pacientes,
 		atender_siguiente_paciente(doctor, turnos_pacientes);
 
 	} else if (strcmp(comando, COMANDO_INFORME) == 0) {
-		if(len_split(parametros) < 2){
+		size_t len = len_split(parametros);
+		if(len == 1 || len > 2){
 			printf(ENOENT_PARAMS, comando);
 			return;
 		}
-		informe_doctores(parametros[0], parametros[1], doctores);
+		if(len == 0){
+			informe_doctores(NULL, NULL, doctores);	
+		} else{
+			informe_doctores(parametros[0], parametros[1], doctores);
+		}
 
 	} else {
 		printf(ENOENT_CMD, comando);
