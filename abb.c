@@ -25,7 +25,7 @@ struct abb_iter{
 };
 
 
-nodo_t* nodo_crear(const char *clave, void *dato){
+static nodo_t* nodo_crear(const char *clave, void *dato){
     nodo_t* nodo = malloc(sizeof(nodo_t));
     if(nodo == NULL){
         return false;
