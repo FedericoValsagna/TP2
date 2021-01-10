@@ -258,21 +258,38 @@ void abb_in_order(abb_t *arbol, bool visitar(const char *, void *, void *), void
     _abb_in_order(arbol->raiz, visitar, extra);
 }
 
-nodo_t* obtener_inicio(const abb_t* abb, nodo_t* actual, char* inicio){
-    if(!actual){
+nodo_t* abb_iter_in_crear_personalizado(const abb_t *arbol, char* clave){
+    abb_iter_t* iter = malloc(sizeof(abb_iter_t));
+    if(!iter){
         return NULL;
     }
-    int comparacion = abb->comparar(actual->clave, inicio);
-    if(comparacion < 0){
-        nodo_t* resultado = obtener_inicio(abb,actual->der,inicio);
-        return resultado == NULL ?  actual :  resultado;
+    pila_t* pila = pila_crear();
+    if(!pila){
+        free(iter);
+        return NULL;
     }
-    if(comparacion > 0){
-        return obtener_inicio(abb, actual->izq, inicio);
+    iter->stack = pila;
+    iter->abb = arbol;
+    iter->act = arbol->raiz;
+    if(!iter->act){
+        return iter;
     }
-    return actual;
-
+    while(iter->act){
+        if(arbol->comparar(iter->act->clave, clave) == 0){
+            return iter;
+        }
+        pila_apilar(pila, iter->act);
+        if(arbol->comparar(iter->act->clave, clave) < 0){
+            iter->act = iter->act->der;
+            pila_desapilar(pila);
+        }else{
+            iter->act = iter->act->izq
+        }
+    }
+    iter->act = pila_desapilar(pila);
+    return iter;
 }
+
 abb_iter_t *abb_iter_in_crear(const abb_t *arbol){
     abb_iter_t* iter = malloc(sizeof(abb_iter_t));
     if(!iter){
