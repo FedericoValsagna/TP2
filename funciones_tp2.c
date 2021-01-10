@@ -29,18 +29,13 @@ void atender_siguiente_paciente(doctor_t* doctor, hash_t* lista_pacientes_totale
 }
 
 void informe_doctores(char* letra_inicio, char* letra_final, abb_t* doctores){
-    abb_iter_t* iterador = abb_iter_in_crear(doctores);
+    abb_iter_t* iterador = abb_iter_in_crear_personalizado(doctores);
     size_t contador = 0;
-    while(!abb_iter_in_al_final(iterador)){
-        doctor_t* doctor_actual = (doctor_t*)abb_iter_in_ver_actual(iterador);
-        if(strcmp(doctor_actual->nombre, letra_inicio) < 0){
-            continue;
-        }
-        if(strcmp(doctor_actual->nombre, letra_final) > 0){
-            break;
-        }
+    while(!abb_iter_in_al_final(iterador) && strcmp(abb_iter_in_ver_actual(iterador), letra_final)){
+        doctor_t* doctor_actual = abb_iter_in_ver_actual(iterador);
         contador++;
         printf(INFORME_DOCTOR, contador, doctor_actual->nombre, doctor_actual->especialidad, doctor_actual->pacientes_atendidos);
+        abb_iter_in_avanzar(doctores);
     }
     abb_iter_in_destruir(iterador);
 }
