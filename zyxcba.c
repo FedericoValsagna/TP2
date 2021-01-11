@@ -119,6 +119,11 @@ void* constructor_paciente(char** linea, void* extra){
 	paciente->anio_inscripcion = (size_t)atoi(linea[1]);
 	return paciente;
 }
+void destruir_paciente(void* p){
+    paciente_t* paciente = (paciente_t*) p;
+    free(paciente->nombre);
+    free(paciente);
+}
 
 void* constructor_doctor(char** linea, void* extra){
 	doctor_t* doctor = malloc(sizeof(doctor_t));
@@ -141,6 +146,13 @@ void* constructor_doctor(char** linea, void* extra){
 
 	return doctor;
 }
+void destruir_doctor(void* d){
+	doctor_t* doctor = (doctor_t*) d;
+	free(doctor->especialidad);
+	free(doctor->nombre);
+	free(doctor);
+}
+
 
 bool llenar_doctores(lista_t* doctores_lista, abb_t* doctores_abb){
 	lista_iter_t* doctores_iter = lista_iter_crear(doctores_lista);
@@ -196,8 +208,7 @@ int main(int argc, char** argv) {
 	char* csv_doctores = argv[1];
 	char* csv_pacientes = argv[2];
 
-	abb_t* doctores = abb_crear(strcmp, free); 
-	// Todos estos se estan creando con free para liberar pero muy probablemente no este bien
+	abb_t* doctores = abb_crear(strcmp, destruir_doctor);
 	if(!doctores){
 		return 1;
 	}
@@ -207,7 +218,7 @@ int main(int argc, char** argv) {
 		abb_destruir(doctores);
 		return 1;
 	}
-	hash_t* turnos_pacientes = hash_crear(free);
+	hash_t* turnos_pacientes = hash_crear(lista_pacientes_destruir);
 	if(!turnos_pacientes){
 		abb_destruir(doctores);
 		hash_destruir(pacientes);
@@ -238,8 +249,6 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 	lista_destruir(doctores_lista, NULL); 
-	// Creo que no alcanza con esto por que los nombres de cada doctor y paciente
-	// estan hechos con strdup, tal vez se pierda memoria aca para tener en cuenta en el fiuter
 	lista_destruir(pacientes_lista, NULL);
 
 	procesar_entrada(pacientes, doctores, turnos_pacientes);
