@@ -70,7 +70,7 @@ size_t lista_pacientes_cantidad(lista_pacientes_t* lista_pacientes){
 }
 
 void lista_pacientes_destruir(lista_pacientes_t* lista_pacientes){
-    cola_destruir(lista_pacientes->emergencias, free);
-    heap_destruir(lista_pacientes->normales, free); // Agregue los free para que no se pierda memoria al dejar pacientes sin liberar
+    cola_destruir(lista_pacientes->emergencias, destruir_paciente);
+    heap_destruir(lista_pacientes->normales, destruir_paciente); // Agregue los free para que no se pierda memoria al dejar pacientes sin liberar
     free(lista_pacientes);
 }

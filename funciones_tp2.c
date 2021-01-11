@@ -35,7 +35,10 @@ void atender_siguiente_paciente(doctor_t* doctor, hash_t* lista_pacientes_totale
 void informe_doctores(char* letra_inicio, char* letra_final, abb_t* doctores){
     abb_iter_t* iterador = strcmp(letra_inicio, "") == 0 ? abb_iter_in_crear(doctores) : abb_iter_in_crear_personalizado(doctores, letra_inicio);
     size_t contador = 0;
-    while(!abb_iter_in_al_final(iterador) && strcmp(abb_iter_in_ver_actual(iterador), letra_final) < 0){
+    while(!abb_iter_in_al_final(iterador)){
+        if(strcmp(abb_iter_in_ver_actual(iterador), letra_final) > 0 && strcmp(letra_final, "") != 0){
+            break;
+        }
         contador++; 
         abb_iter_in_avanzar(iterador);
     }   
@@ -45,8 +48,11 @@ void informe_doctores(char* letra_inicio, char* letra_final, abb_t* doctores){
         return;
     }
     contador = 0;
-    iterador = abb_iter_in_crear_personalizado(doctores, letra_inicio);
-    while(!abb_iter_in_al_final(iterador) && strcmp(abb_iter_in_ver_actual(iterador), letra_final) < 0){
+    iterador = strcmp(letra_inicio, "") == 0 ? abb_iter_in_crear(doctores) : abb_iter_in_crear_personalizado(doctores, letra_inicio);
+    while(!abb_iter_in_al_final(iterador)){
+        if(strcmp(abb_iter_in_ver_actual(iterador), letra_final) > 0 && strcmp(letra_final, "") != 0){
+            break;
+        }
         doctor_t* doctor_actual = abb_obtener(doctores, abb_iter_in_ver_actual(iterador));
         contador++;
         printf(INFORME_DOCTOR, contador, doctor_actual->nombre, doctor_actual->especialidad, doctor_actual->pacientes_atendidos);
