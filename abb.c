@@ -258,7 +258,7 @@ void abb_in_order(abb_t *arbol, bool visitar(const char *, void *, void *), void
     _abb_in_order(arbol->raiz, visitar, extra);
 }
 
-nodo_t* abb_iter_in_crear_personalizado{
+abb_iter_t* abb_iter_in_crear_personalizado(const abb_t *arbol, char* clave){
     abb_iter_t* iter = malloc(sizeof(abb_iter_t));
     if(!iter){
         return NULL;
@@ -283,7 +283,7 @@ nodo_t* abb_iter_in_crear_personalizado{
             iter->act = iter->act->der;
             pila_desapilar(pila);
         }else{
-            iter->act = iter->act->izq
+            iter->act = iter->act->izq;
         }
     }
     iter->act = pila_desapilar(pila);
