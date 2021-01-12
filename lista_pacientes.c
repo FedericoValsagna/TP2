@@ -15,10 +15,10 @@ int paciente_cmp(const void *paciente1, const void *paciente2){
     paciente_t* p1 = (paciente_t*) paciente1;
     paciente_t* p2 = (paciente_t*) paciente2;
     if (p1->anio_inscripcion < p2->anio_inscripcion){
-        return -1;
+        return 1;
     }
     if (p1->anio_inscripcion > p2->anio_inscripcion){
-        return 1;
+        return -1;
     }
     return 0;
 }
@@ -70,7 +70,7 @@ size_t lista_pacientes_cantidad(lista_pacientes_t* lista_pacientes){
 }
 
 void lista_pacientes_destruir(lista_pacientes_t* lista_pacientes){
-    cola_destruir(lista_pacientes->emergencias, destruir_paciente);
-    heap_destruir(lista_pacientes->normales, destruir_paciente); // Agregue los free para que no se pierda memoria al dejar pacientes sin liberar
+    cola_destruir(lista_pacientes->emergencias, NULL);
+    heap_destruir(lista_pacientes->normales, NULL);
     free(lista_pacientes);
 }
