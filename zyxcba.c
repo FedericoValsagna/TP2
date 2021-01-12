@@ -213,7 +213,7 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 
-	hash_t* pacientes = hash_crear(free);
+	hash_t* pacientes = hash_crear(destruir_paciente);
 	if(!pacientes){
 		abb_destruir(doctores);
 		return 1;
