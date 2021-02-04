@@ -8,7 +8,6 @@
 bool pedir_turno(paciente_t* paciente, char* especialidad, URGENCIA_T urgencia, hash_t* lista_pacientes_totales){
     lista_pacientes_t* lista_pacientes = hash_obtener(lista_pacientes_totales, especialidad);
     if(!lista_pacientes_guardar_paciente(lista_pacientes, paciente, urgencia)){
-        //Falta agregar mensaje de error por si no se pudo guardar el paciente a la lista
         return false;
     }
     printf(PACIENTE_ENCOLADO, paciente->nombre);
