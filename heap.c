@@ -12,7 +12,7 @@
 void downheap(heap_t* heap, size_t padre, size_t hijo_izq, size_t hijo_der);
 void upheap(heap_t* heap, size_t padre, size_t hijo);
 
-typedef struct heap{
+struct heap{
     vector_t* arreglo;
     cmp_func_t comparar;
 };
