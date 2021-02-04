@@ -200,6 +200,10 @@ void destruir_estructuras(hash_t* pacientes, abb_t* doctores, hash_t* turnos_pac
 	hash_destruir(turnos_pacientes);
 }
 
+void lista_pacientes_destruir_wrapper(void* lista_pacientes){
+    lista_pacientes_destruir(lista_pacientes);
+}
+
 int main(int argc, char** argv) {
 	if(argc < 3){
 		printf(ENOENT_CANT_PARAMS);
@@ -218,7 +222,7 @@ int main(int argc, char** argv) {
 		abb_destruir(doctores);
 		return 1;
 	}
-	hash_t* turnos_pacientes = hash_crear(lista_pacientes_destruir);
+	hash_t* turnos_pacientes = hash_crear(lista_pacientes_destruir_wrapper);
 	if(!turnos_pacientes){
 		abb_destruir(doctores);
 		hash_destruir(pacientes);
