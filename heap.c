@@ -9,15 +9,13 @@
 #define TOPE_HIJO_IZQ 1
 #define TOPE_HIJO_DER 2
 
-typedef int (*cmp_func_t) (const void *a, const void *b);
-
 void downheap(heap_t* heap, size_t padre, size_t hijo_izq, size_t hijo_der);
 void upheap(heap_t* heap, size_t padre, size_t hijo);
 
 typedef struct heap{
     vector_t* arreglo;
     cmp_func_t comparar;
-}heap_t;
+};
 
 heap_t *heap_crear(cmp_func_t cmp){
     heap_t* heap = malloc(sizeof(heap_t));
